@@ -5,6 +5,9 @@ from SMT_translator import SMT_translator
 
 
 def create_input_list(input_list :list) -> list:
+    """
+    read input file and make input list
+    """
     input_item_list = []
     for input_item in input_list:
         item_list = []
@@ -24,7 +27,7 @@ if __name__ == "__main__":
     with open(sys.argv[1], 'r') as my_file:
         input_list = my_file.readlines()
     input_item_list = create_input_list(input_list)
-
+    
     smt_translator = SMT_translator()
     smt_translator.set_output_file(output_file_name)
     smt_translator.set_cageinput(input_item_list)

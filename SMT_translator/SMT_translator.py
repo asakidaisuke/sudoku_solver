@@ -114,6 +114,11 @@ class SMT_translator:
     
     
     def translate(self) -> None:
+        """
+        Make smt2 file.
+        Each method creates constrain list.
+        __write_file write smt2 file by reading each constrain list
+        """
         self.__declaration()
         self.__max_min_constrain()
         self.__distinct_constrain_row()
