@@ -1,6 +1,6 @@
 SMT_translator/*.ipynb
 SMT_translator/*.smt2
 SMT_translator/__pycache__
-
+SMT_translator/.ipynb_checkpoints/*
 z3/
-
+.ipynb_checkpoints/
