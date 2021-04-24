@@ -1,0 +1,6 @@
+SMT_translator/*.ipynb
+SMT_translator/*.smt2
+SMT_translator/__pycache__
+
+z3/
+
