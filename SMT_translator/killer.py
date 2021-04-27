@@ -3,7 +3,7 @@ from collections import defaultdict
 import subprocess
 
 from SMT_translator import SMT_translator
-from sudoku import create_input_list, read_model
+from sudoku import cage_constraint, read_model
 
 
 def smt(cage_input :list, output_file_name :str = 'b.smt2') -> list:
@@ -21,6 +21,6 @@ if __name__ == "__main__":
     input_list = []
     with open(sys.argv[1], 'r') as my_file:
         input_list = my_file.readlines()
-    input_item_list = create_input_list(input_list)
-    
+    input_item_list = cage_constraint(input_list)
+
     print(smt(input_item_list))
