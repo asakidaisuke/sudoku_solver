@@ -19,10 +19,10 @@ def morethan(target1 :int, target2 :str) -> list:
 def lessthan(target1 :int, target2 :str) -> list:
     return ["<=", target2, str(target1),]
 
-def distinct(input_list :list):
+def distinct(input_list :list) -> list:
     return ["distinct"] + input_list
 
-def sudoku_constraint(mesh_size :int) -> None:
+def sudoku_constraint(mesh_size :int) -> list:
     mesh_permutation = list(itertools.product(range(0,mesh_size**2, mesh_size), repeat=2))
     off_set_list = list(itertools.product(range(1, mesh_size + 1), repeat=2))
     dis_list = []
