@@ -22,13 +22,6 @@ def lessthan(target1 :int, target2 :str) -> list:
 def distinct(input_list :list):
     return ["distinct"] + input_list
 
-def show_distinct(input_list :list) -> str:
-    state = "(distinct"
-    for item in input_list:
-        state += " " + item
-    state = state + ")"
-    return state
-
 def sudoku_constraint(mesh_size :int) -> None:
     mesh_permutation = list(itertools.product(range(0,mesh_size**2, mesh_size), repeat=2))
     off_set_list = list(itertools.product(range(1, mesh_size + 1), repeat=2))
@@ -36,20 +29,6 @@ def sudoku_constraint(mesh_size :int) -> None:
     for mesh in mesh_permutation:
         dis_list.append([var(mesh[0] + off_set[0], mesh[1] + off_set[1]) for off_set in off_set_list])
     return dis_list
-
-def show_declare_int(variable :str) -> str:
-    return "(declare-fun " + variable + " () Int)"
-
-def show_get_value(input_list :list) -> str:
-    return "(get-value  ( " + " ".join(input_list) + "))"
-
-def show(formed_list :list) -> str:
-    if type(formed_list) is int:
-        return str(formed_list)
-    elif type(formed_list) is str:
-        return formed_list
-    elif type(formed_list) is list:
-        return "(" + " ".join([ show(y) for y in formed_list ]) + ")"
 
 def cage_constraint(input_list :list) -> list:
     input_item_list = []
@@ -66,6 +45,20 @@ def form_input(cage_input_list :list) -> list:
         equal(cage_input[0], plus([var(cage_input[i]) for i in range(1,len(cage_input))])) 
         for cage_input in cage_input_list
     ]
+
+def show_declare_int(variable :str) -> str:
+    return "(declare-fun " + variable + " () Int)"
+
+def show_get_value(input_list :list) -> str:
+    return "(get-value  ( " + " ".join(input_list) + "))"
+
+def show(formed_list :list) -> str:
+    if type(formed_list) is int:
+        return str(formed_list)
+    elif type(formed_list) is str:
+        return formed_list
+    elif type(formed_list) is list:
+        return "(" + " ".join([ show(y) for y in formed_list ]) + ")"
 
 def read_model(output :str) -> list:
     output_split_list = output.split('\n')
