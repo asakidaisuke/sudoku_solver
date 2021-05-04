@@ -6,3 +6,5 @@ z3/
 .ipynb_checkpoints/
 *.txt
 *.cnf
+SAT_translator/__pycache__/*
+SAT_translator/*.ipynb
