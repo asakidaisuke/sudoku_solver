@@ -4,7 +4,6 @@ SMT_translator/__pycache__
 SMT_translator/.ipynb_checkpoints/*
 z3/
 .ipynb_checkpoints/
-*.txt
 *.cnf
 SAT_translator/__pycache__/*
 SAT_translator/*.ipynb
