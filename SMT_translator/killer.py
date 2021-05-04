@@ -3,13 +3,13 @@ from collections import defaultdict
 import subprocess
 
 from SMT_translator import SMT_translator
-from sudoku import cage_constraint, read_model
+from sudoku import cage_constraint, read_model, print_matrix
 
 
 def smt(cage_input :list, output_file_name :str = 'b.smt2') -> list:
     smt_translator = SMT_translator()
     smt_translator.set_output_file(output_file_name)
-    smt_translator.set_cageinput(input_item_list)
+    smt_translator.set_cageinput(cage_input)
     smt_translator.translate()
     
     z3_output = subprocess.check_output(['z3 ' + output_file_name], shell=True)
@@ -22,5 +22,6 @@ if __name__ == "__main__":
     with open(sys.argv[1], 'r') as my_file:
         input_list = my_file.readlines()
     input_item_list = cage_constraint(input_list)
-
-    print(smt(input_item_list))
+    
+    output = smt(input_item_list)
+    print_matrix(output)

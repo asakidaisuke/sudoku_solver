@@ -1,4 +1,5 @@
 import itertools
+import math
 
 
 def var(*args :int, alphabet = "x") -> str:
@@ -31,19 +32,64 @@ def sudoku_constraint(mesh_size :int) -> list:
     return dis_list
 
 def cage_constraint(input_list :list) -> list:
+    """
+    [
+       [3, 12, 13],
+       [3, 12, 13],
+       ....
+    ]
+    """
     input_item_list = []
     for input_item in input_list:
-        input_item_splited = list(map(
-            lambda x: x.replace("\n", "") if "\n" in x else x, input_item.split(' ')
-        ))
-        input_item_splited = list(filter(lambda x: x != "", input_item_splited))
+        input_item_splited = [
+            item.replace("\n", "") if "\n" in item else item for item in input_item.split(' ') 
+        ]
+        input_item_splited = [item for item in input_item_splited if item != ""]
         input_item_list.append(input_item_splited)
-    return form_input(input_item_list)
+        
+    return cage_form_input(input_item_list)
 
-def form_input(cage_input_list :list) -> list:
+def cage_form_input(cage_input_list :list) -> list:
+    """
+    [
+       ["=",3, ["+", x12, x13]],
+       ["=",3, ["+", x12, x13]],
+       ....
+    ]
+    """
     return [
         equal(cage_input[0], plus([var(cage_input[i]) for i in range(1,len(cage_input))])) 
         for cage_input in cage_input_list
+    ]
+
+def namurupe_constraint(input_list :list) -> list:
+    """
+    [
+       [3, 1, 2],
+       [3, 1, 2],
+       ....
+    ]
+    """
+    judge_is_int = lambda x: True if x[0] != '.' else None
+    mesh = len(input_list)
+    constraint_list = []
+    for i in range(mesh):
+        constraint_list += [
+            (str(i+1) + str(j+1), int(input_list[i].split(' ')[j][0]))
+            for j in range(mesh) if judge_is_int(input_list[i].split(' ')[j])
+        ]
+    return namurupe_form_input(constraint_list)
+        
+def namurupe_form_input(input_list :list) -> list:
+    """
+    [
+       ["=", 3, x12],
+       ["=", 3, x12],
+       ....
+    ]
+    """
+    return [
+        equal(item[1], var(item[0])) for item in input_list
     ]
 
 def show_declare_int(variable :str) -> str:
@@ -80,3 +126,11 @@ def read_model(output :str) -> list:
         output = output.split(' ')
         read_output.append((output[0], int(output[1])))
     return read_output
+
+def print_matrix(output_list :list) -> None:
+    mesh = int(math.sqrt(len(output_list)))
+    out_string = ""
+    for i in range(mesh):
+        out = "".join([str(item[1])+ " " for item in output_list[i * mesh : i * mesh + mesh]]) + "\n" 
+        out_string += out
+    print(out_string)
