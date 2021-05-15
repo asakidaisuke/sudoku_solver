@@ -14,7 +14,7 @@ def sat(cage_input :list, output_file_name :str = 'b.smt2') -> list:
     sat_translator.translate()
     
 #     subprocess.run(['minisat ' + output_file_name + ' ' + result_file], shell=True)
-    subprocess.run(['python3 BCP_SAT.py ' + output_file_name + ' ' + result_file], shell=True)
+    subprocess.run(['python3 BCP_SAT_two_literal.py ' + output_file_name + ' ' + result_file], shell=True)
     return 0
 
 if __name__ == "__main__":
