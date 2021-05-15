@@ -23,54 +23,54 @@ def make_two_watched_table(
         all_table[i] = vars
 
 
-def find_simplication_from_table(index: int, current_list: list, first_look=False):
+def find_implication_from_table(index: int, current_list: list, first_look=False):
     if index is None:
         return single_literals
-    simplied_clause = [key for key, value in watch_table.items() if index in value]
-    simplied_clause = find_true_simlication(simplied_clause, index, current_list)
+    implied_clause = [key for key, value in watch_table.items() if index in value]
+    implied_clause = find_true_implication(implied_clause, index, current_list)
     if first_look:
         for i in range(index):
-            simplied_clause += find_true_simlication(
+            implied_clause += find_true_implication(
                 [key for key, value in watch_table.items() if i in value],
                 i,
                 current_list
             )
-        simplied_clause = list(set(simplied_clause))
-        simplied_clause += single_literals
-    return simplied_clause
+        implied_clause = list(set(implied_clause))
+        implied_clause += single_literals
+    return implied_clause
 
 
-def find_true_simlication(
-        simplied_clause: list, index: int, current_list: list
+def find_true_implication(
+        implied_clause: list, index: int, current_list: list
 ) -> list:
-    truely_simplied_clause = []
-    for clause in simplied_clause:
+    truely_implied_clause = []
+    for clause in implied_clause:
         # satになった場合は除外
         if (current_list[index] and index in CNF[clause][0]) or \
                 (not current_list[index] and index in CNF[clause][1]):
             continue
-        # simplication状態になったclauseのwatch listを取得
+        # implication状態になったclauseのwatch listを取得
         watch_literal = watch_table[clause]
-        # simplication状態になったclauseのwatch list以外をリスト化
+        # implication状態になったclauseのwatch list以外をリスト化
         not_watch_literal = [literal for literal in all_table[clause] if literal not in watch_literal]
         # unassigned状態の変数があればそれを監視下に置換する
         not_assinged = [literal for literal in not_watch_literal if current_list[literal] is None]
         if len(not_assinged) > 0:
             watch_table[clause][watch_table[clause].index(index)] = not_assinged[0]
         elif len(watch_table[clause]) == 1:
-            truely_simplied_clause.append(clause)
+            truely_implied_clause.append(clause)
         else:
-            truely_simplied_clause.append(clause)
-    return truely_simplied_clause
+            truely_implied_clause.append(clause)
+    return truely_implied_clause
 
 
 def two_watched(current_list: list, CNF: list, index: int) -> bool:
     X = current_list.copy()
-    new_simplied_clause = find_simplication_from_table(index, X, first_look=True)
-    while len(new_simplied_clause) > 0:
-        simplied_clause = new_simplied_clause
-        new_simplied_clause = []
-        for clause in simplied_clause:
+    new_implied_clause = find_implication_from_table(index, X, first_look=True)
+    while len(new_implied_clause) > 0:
+        implied_clause = new_implied_clause
+        new_implied_clause = []
+        for clause in implied_clause:
 
             P, N = CNF[clause]
             I = [i for i in P if X[i] != False] + \
@@ -81,8 +81,8 @@ def two_watched(current_list: list, CNF: list, index: int) -> bool:
             i = I.pop()
             if I == [] and X[i] == None:
                 X[i] = i in P
-                new_simplied_clause += find_simplication_from_table(i, X)
-                new_simplied_clause = list(set(new_simplied_clause))
+                new_implied_clause += find_implication_from_table(i, X)
+                new_implied_clause = list(set(new_implied_clause))
     return True
 
 
