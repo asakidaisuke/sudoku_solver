@@ -25,9 +25,9 @@ def make_two_watched_table(
 def find_unit_clause(index: int, current_list: list, unit_clause: list):
     """
     新しく割り当てられた変数にtriggerされて、新しくunit状態となった
-    clauseを列挙して返す。その過程でコンフリクトを見つけた場合はNoneを返す。
+    clauseを探し、その過程でコンフリクトを見つけた場合はNoneを返す。
     """
-    # 新しい割り当てがない場合はliteralが1個しかないclauseをunit状態のclauseとして返す。
+    # 割り当てが何もなされていない場合、一個のliteralのclauseのみを返す。
     if index is None:
         for literal in (single_literals):
             unit_clause.append(literal)
@@ -51,14 +51,14 @@ def filter_conflict_and_duplicate(
         # 既にそのclauseがunit状態と認識されていたら飛ばす。
         if clause in unit_clause:
             continue
-        # 新しいassignでsatになった場合は除外
+        # 新しいassignでsatになった場合は飛ばす。
         if (current_list[index] and index in CNF[clause][0]) or \
                 (not current_list[index] and index in CNF[clause][1]):
             continue
         # watch listを取得
         watch_literal = watch_table[clause]
         other_literal = list(set(watch_literal) - set([index]))[0]
-        # unit状態になったclauseのwatching literal以外のliteralをリスト化
+        # watching literal以外のliteral
         not_watch_literal = list(set(CNF[clause][0] + CNF[clause][1]) - set(watch_literal))
         if len(not_watch_literal) > 0:
             # not Falseの変数を探す、あればそれを監視下に置換する
@@ -94,13 +94,14 @@ def filter_conflict_and_duplicate(
 
 def two_watched(current_list: list, CNF: list, index: int) -> bool:
     X = current_list.copy()
-    # まず最初に新しく割り当てられてた変数からtriggerされるunit clauseを探索する。
     unit_clause = []
+    # まず最初に新しく割り当てられてた変数からtriggerされるunit clauseを探索する。
     noConflict = find_unit_clause(index, X, unit_clause)
     # コンフリクトがある場合はNoneになる。
     if noConflict is None:
         return False
-    # unit_clauseにはunit状態のclauseの番号と割り当て待ちの変数が入っている。
+    # unit_clauseにはunit状態のclauseの番号と割り当て待ちの変数(番号)が入っている。
+    # unit_clause -> [(clause番号, unitで割り当てられる変数番号),(,), ]
     while len(unit_clause) > 0:
         clause = unit_clause.pop()
         # unit状態のclauseを取り出す。
@@ -113,6 +114,7 @@ def two_watched(current_list: list, CNF: list, index: int) -> bool:
         if noConflict is None:
             return False
         # # 新しくunit状態となったものを保持しておき次のiterationで割り当てていく。
+
     if index is None:
         # 一つだけのclauseで割り当てられる変数はその後変動がないので、
         # 決定の割り付けとして最初の段階でXを更新する。
