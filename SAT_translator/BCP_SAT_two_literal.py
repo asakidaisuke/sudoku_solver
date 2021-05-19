@@ -32,21 +32,23 @@ def find_unit_clause(index: int, current_list: list, unit_clause: list):
         for literal in (single_literals):
             unit_clause.append(literal)
         return True
-    # 新しく割り当てられた変数をwatchしているclauseを列挙する。
-    including_clause = [key for key, value in watch_table.items() if index in value]
     # 新しく割り当てられた変数をwatchしているclauseからunit状態のものを抽出。
     # コンフリクトがあった場合はNoneを返す。
-    noConflict = list_is_unit_clause(including_clause, index, current_list, unit_clause)
+    noConflict = filter_conflict_and_duplicate(index, current_list, unit_clause)
     return noConflict
 
-def list_is_unit_clause(
-                including_clause: list, index: int, current_list: list, unit_clause: list
+def filter_conflict_and_duplicate(
+                index: int, current_list: list, unit_clause: list
         ) -> list:
     """
     watching literalに新しくassingした片酢が入ってた物の中から、
     コンフリクトと新しいunit状態のclauseを探し出す。
     """
-    for clause in including_clause:
+    # watchリストに変数が入っていない場合、そのclauseは飛ばす。
+    for clause, watch_literal_list in watch_table.items():
+        if index not in watch_literal_list:
+            continue
+        # 既にそのclauseがunit状態と認識されていたら飛ばす。
         if clause in unit_clause:
             continue
         # 新しいassignでsatになった場合は除外
@@ -118,6 +120,25 @@ def two_watched(current_list: list, CNF: list, index: int) -> bool:
             current_list[i] = X[i]
     return True
 
+# def propagate(current_list: list, CNF: list) -> bool:
+#     X = current_list.copy()
+#     done = False
+#     while not done:
+#         done = True
+#         for (P, N) in CNF:
+#             I = [i for i in P if X[i] != False] + \
+#                 [i for i in N if X[i] != True]
+#             if I == []:
+#                 # continue
+#                 return False
+#             i = I.pop()
+#             if I == [] and X[i] == None:
+#                 X[i] = i in P
+#                 done = False
+#     if current_list[0] is None:
+#         for i in range(len(X)):
+#             current_list[i] = X[i]
+#     return True
 
 def search(X, CNF, index=None):
     # print(X)
@@ -134,6 +155,20 @@ def search(X, CNF, index=None):
     Y[i] = False
     return search(Y, CNF, i)
 
+# def search(X, CNF):
+#     # print(X)
+#     if not propagate(X, CNF):
+#         return None
+#     if not None in X:
+#         return X
+#     i = X.index(None)
+#     Y = X[:]
+#     Y[i] = True
+#     Z = search(Y, CNF)
+#     if Z != None:
+#         return Z
+#     Y[i] = False
+#     return search(Y, CNF)
 
 def write_output(file_name: str, output: list) -> None:
     output = [str(i + 1) + ' ' if output[i] else str(-(i + 1)) + ' ' for i in range(len(output))] + ['0']
@@ -144,7 +179,7 @@ def write_output(file_name: str, output: list) -> None:
 
 
 if __name__ == '__main__':
-    # start = time.time()
+    start = time.time()
     cnf_file = sys.argv[1]
     output_file = sys.argv[2]
 
@@ -165,4 +200,4 @@ if __name__ == '__main__':
 
     output = search(none_list, CNF)
     write_output(output_file, output)
-    # print(time.time() - start)
+    print(time.time() - start)
