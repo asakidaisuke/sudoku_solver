@@ -55,11 +55,10 @@ def filter_conflict_and_duplicate(
         if (current_list[index] and index in CNF[clause][0]) or \
                 (not current_list[index] and index in CNF[clause][1]):
             continue
-        # watch listを取得
-        watch_literal = watch_table[clause]
-        other_literal = list(set(watch_literal) - set([index]))[0]
+        # watching literalのもう片方のliteralを取得
+        other_literal = list(set(watch_literal_list) - set([index]))[0]
         # watching literal以外のliteral
-        not_watch_literal = list(set(CNF[clause][0] + CNF[clause][1]) - set(watch_literal))
+        not_watch_literal = list(set(CNF[clause][0] + CNF[clause][1]) - set(watch_literal_list))
         if len(not_watch_literal) > 0:
             # not Falseの変数を探す、あればそれを監視下に置換する
             assignable = [
