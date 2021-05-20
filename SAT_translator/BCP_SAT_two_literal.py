@@ -113,7 +113,6 @@ def two_watched(current_list: list, CNF: list, index: int) -> bool:
         # conflictがあればNoneが返ってくる。
         if noConflict is None:
             return False
-        # # 新しくunit状態となったものを保持しておき次のiterationで割り当てていく。
 
     if index is None:
         # 一つだけのclauseで割り当てられる変数はその後変動がないので、
