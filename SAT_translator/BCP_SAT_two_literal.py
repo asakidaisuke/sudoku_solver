@@ -41,8 +41,8 @@ def filter_conflict_and_duplicate(
                 index: int, current_list: list, unit_clause: list
         ) -> list:
     """
-    watching literalに新しくassingした片酢が入ってた物の中から、
-    コンフリクトと新しいunit状態のclauseを探し出す。
+    watching literalに新しくassignした変数によって生み出されたコンフリクト、
+    unit状態のclauseを探し出す。
     """
     # watchリストに変数が入っていない場合、そのclauseは飛ばす。
     for clause, watch_literal_list in watch_table.items():
